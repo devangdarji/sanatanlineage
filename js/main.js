@@ -14,7 +14,7 @@ const VERSION = "v8";
 const PREV = { v: "v7", nodes: 216, persons: 197, spouses: 19 };
 
 // GitHub repo ka link daalein, About panel ka "contribute" button apne aap ban jayega
-const REPO_URL = "";
+const REPO_URL = "https://github.com/devangdarji/sanatanlineage";
 
 const CHANGELOG = [
   "v8: naya data format (ek vyakti = ek block), bina build ke chalta hai, adhoore source theek, ek patni wale logon ki 'Patni' ab dikhti hai",
