@@ -41,6 +41,10 @@ Koi build nahi. Poora folder jaisa hai waisa kisi static hosting par daal dein: 
 
 Vishnu, Bhagavata, Agni aur Garuda Purana, Mahabharata (Adi Parva 89-95) aur Valmiki Ramayana se milaan kiya gaya hai. Sab Puranic/Itihasik manyata hai; kaal-nirdharan pramanit nahi hai.
 
+## Analytics
+
+Site GoatCounter use karti hai: koi cookie nahi, koi personal data nahi.
+
 ## License
 
 Code [MIT](LICENSE) ke tahat.
