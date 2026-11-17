@@ -309,6 +309,24 @@ button {
   pointer-events: auto;
 }
 
+/* Desktop par #tools ka apna dabba nahi: buttons seedhe control bar me,
+   kram: Expand, Collapse, Search, Vansh */
+#tools {
+  display: contents;
+}
+
+#ex {
+  order: -2;
+}
+
+#co {
+  order: -1;
+}
+
+.vwrap {
+  order: 1;
+}
+
 /* ---- search */
 .sbox {
   position: relative;
@@ -505,8 +523,12 @@ button {
   font-weight: 500;
 }
 
-/* ---- mobile: heading kone ke buttons ke beech, search poori chaudai, neeche 3 buttons */
+/* ---- mobile: upar sirf heading + patla search, Expand/Collapse/Vansh neeche ki patti me */
 @media (max-width: 700px) {
+  :root {
+    --dock-h: 50px; /* neeche wali patti ki oonchai (Details button isi ke upar rehta hai) */
+  }
+
   #hdr {
     top: calc(10px + env(safe-area-inset-top));
     padding: 0 10px;
@@ -518,43 +540,32 @@ button {
     letter-spacing: 0.5px;
   }
 
+  /* search ka alag card nahi, sirf ek line */
   #ctl {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    display: block;
     width: 100%;
     max-width: 520px;
-    margin-top: 8px;
-    padding: 8px;
-    border-radius: 20px;
-    background: var(--bar-solid);
-    backdrop-filter: none; /* neeche wali Vansh-sheet ke liye zaroori, aur phone par halka */
+    margin: 6px auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none; /* zaroori: iske bina neeche ki patti aur Vansh-sheet screen se nahi judte */
     -webkit-backdrop-filter: none;
-  }
-
-  #ctl .sbox {
-    grid-column: 1 / -1;
-    order: -1;
-  }
-
-  #ctl > button,
-  #vb {
-    width: 100%;
-    min-height: 40px;
-    justify-content: center;
-    padding: 9px 6px;
-    font-size: 13px;
   }
 
   #q {
     width: 100%;
-    padding: 11px 40px 11px 38px;
+    padding: 9px 40px 9px 38px;
     font-size: 16px; /* 16px se kam par iPhone page zoom kar deta hai */
+    background: var(--bar-solid);
+    box-shadow: 0 6px 18px var(--shadow);
   }
 
   #qx {
     right: 4px;
-    padding: 8px 12px;
+    padding: 6px 12px;
     font-size: 16px;
   }
 
@@ -568,7 +579,44 @@ button {
     padding: 11px 12px;
   }
 
-  /* Vansh menu neeche se sheet ban kar khulta hai */
+  /* neeche ki patti: angoothe ki pahunch me */
+  #tools {
+    position: fixed;
+    left: calc(8px + env(safe-area-inset-left));
+    right: calc(8px + env(safe-area-inset-right));
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 6px;
+    border-radius: 18px;
+    background: var(--bar-solid);
+    border: 1px solid var(--line);
+    box-shadow: 0 -4px 24px var(--shadow);
+  }
+
+  #tools > button,
+  #vb {
+    width: 100%;
+    min-height: 36px;
+    justify-content: center;
+    padding: 7px 6px;
+    font-size: 13px;
+  }
+
+  .vwrap {
+    min-width: 0;
+  }
+
+  /* lamba vansh naam ("Kuru-Puruvansh") ek hi line me, zaroorat ho to ... */
+  #vb .vb-t {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Vansh menu neeche se sheet ban kar khulta hai (patti ke upar) */
   #vpop {
     position: fixed;
     top: auto;
@@ -590,7 +638,7 @@ button {
   #hdr h1 {
     font-size: 21px;
   }
-  #ctl > button,
+  #tools > button,
   #vb {
     font-size: 12px;
   }
@@ -696,6 +744,10 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .corner.pulse,
+  #ihint {
+    animation: none;
+  }
   .node.blink rect {
     animation: none;
     filter: drop-shadow(0 0 12px var(--hl));
@@ -750,6 +802,43 @@ button {
   pointer-events: none;
 }
 
+/* Pehli baar aane par "i" ke paas chhota sandesh */
+#ihint {
+  position: fixed;
+  top: calc(28px + env(safe-area-inset-top));
+  left: calc(72px + env(safe-area-inset-left));
+  z-index: 7;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--pop);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 8px 22px var(--shadow);
+  font: 600 12.5px var(--ui);
+  pointer-events: none;
+  animation: hint-in 0.3s ease-out;
+}
+
+@keyframes hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes ring {
+  from {
+    box-shadow: 0 0 0 0 #FF9933aa;
+  }
+  to {
+    box-shadow: 0 0 0 14px #FF993300;
+  }
+}
+
+.corner.pulse {
+  animation: ring 1.2s ease-out 3;
+}
+
 /* ---- Details panel */
 #panel {
   top: calc(84px + env(safe-area-inset-top));
@@ -774,7 +863,8 @@ button {
   display: none;
 }
 
-#pclose {
+#pclose,
+#aclose {
   position: absolute;
   top: 12px;
   right: 14px;
@@ -955,17 +1045,50 @@ button {
     border-radius: 20px;
   }
 
+  /* About bhi Details ki tarah neeche se sheet; upar vriksh dikhta rahe */
   #about {
-    top: calc(58px + env(safe-area-inset-top));
+    top: auto;
     left: calc(8px + env(safe-area-inset-left));
     right: calc(8px + env(safe-area-inset-right));
+    bottom: calc(8px + env(safe-area-inset-bottom));
     width: auto;
     max-width: none;
   }
 
+  #about.closed {
+    transform: translateY(calc(100% + 24px));
+  }
+
   #abody {
-    max-height: calc(100dvh - 80px);
+    max-height: 75vh;
+    max-height: 75dvh;
     padding: 16px 16px 20px;
+  }
+
+  #aclose {
+    top: 8px;
+    right: 8px;
+    padding: 6px 12px;
+    font-size: 20px;
+  }
+
+  /* mobile par "i" ke theek neeche, chhoti nok ke saath */
+  #ihint {
+    top: calc(58px + env(safe-area-inset-top));
+    left: calc(10px + env(safe-area-inset-left));
+  }
+
+  #ihint::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 14px;
+    width: 10px;
+    height: 10px;
+    background: var(--pop);
+    border-left: 1px solid var(--line-strong);
+    border-top: 1px solid var(--line-strong);
+    transform: rotate(45deg);
   }
 
   #panel {
@@ -1011,7 +1134,7 @@ button {
   #popen {
     top: auto;
     right: calc(12px + env(safe-area-inset-right));
-    bottom: calc(12px + env(safe-area-inset-bottom));
+    bottom: calc(18px + var(--dock-h) + env(safe-area-inset-bottom)); /* neeche ki patti ke upar */
     padding: 10px 18px;
     border-right: 1px solid var(--gold);
     border-radius: 999px;

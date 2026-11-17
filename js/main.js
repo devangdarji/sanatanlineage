@@ -8,15 +8,16 @@ import { $, injectVanshColors, initTheme, createPanel, createSearch, createVansh
 // ---------------------------------------------------------------- settings
 // Naya version banate samay sirf yahan badlav karein.
 
-const VERSION = "v8";
+const VERSION = "v9";
 
-// Pichhle version ke aankde: About panel me "(+3 vs v7)" jaisa farq dikhane ke liye
-const PREV = { v: "v7", nodes: 216, persons: 197, spouses: 19 };
+// Pichhle version ke aankde: About panel me "(+3 vs v8)" jaisa farq dikhane ke liye
+const PREV = { v: "v8", nodes: 216, persons: 197, spouses: 54 };
 
 // GitHub repo ka link daalein, About panel ka "contribute" button apne aap ban jayega
 const REPO_URL = "https://github.com/devangdarji/sanatanlineage";
 
 const CHANGELOG = [
+  "v9: mobile par patla header aur neeche buttons ki patti, About card sirf pehli baar, Vercel par live",
   "v8: naya data format (ek vyakti = ek block), bina build ke chalta hai, adhoore source theek, ek patni wale logon ki 'Patni' ab dikhti hai",
   "v7: mobile ke liye naya layout, light/dark theme, heading ke peeche halka glow",
   "v6: saaf heading, search aur Vansh-menu ke naye shabd",
@@ -47,6 +48,7 @@ let activeBr = null; // chuna hua vansh
 // Screen ka woh hissa jo header aur details panel se dhaka nahi hai
 function visibleArea() {
   const a = { left: 0, top: $("#ctl").getBoundingClientRect().bottom, right: innerWidth, bottom: innerHeight };
+  if (isMobile()) a.bottom = Math.min(innerHeight, $("#tools").getBoundingClientRect().top); // neeche ki patti
   if (panel.isOpen()) {
     const r = $("#panel").getBoundingClientRect();
     if (isMobile()) a.bottom = Math.max(a.top + 120, r.top);
@@ -109,7 +111,15 @@ const search = createSearch({
 });
 
 const stats = analyze(PEOPLE);
-const about = createAbout({ stats, version: VERSION, prev: PREV, repoUrl: REPO_URL, changelog: CHANGELOG });
+const about = createAbout({
+  stats,
+  version: VERSION,
+  prev: PREV,
+  repoUrl: REPO_URL,
+  changelog: CHANGELOG,
+  isMobile,
+  seenKey: "vanshavali-about-seen",
+});
 console.log("Vanshavali " + VERSION, stats);
 
 $("#ex").addEventListener("click", () => {

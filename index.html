@@ -26,17 +26,20 @@
   <header id="hdr">
     <h1><span>सनातन वंशावली</span></h1>
     <div id="ctl">
-      <button id="ex">Expand All</button>
-      <button id="co">Collapse All</button>
       <div class="sbox">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Search Name or Vansh" aria-label="Naam ya vansh khojein">
         <button id="qx" title="Saaf karein" aria-label="Search saaf karein">✕</button>
         <div id="sres" role="listbox"></div>
       </div>
-      <div class="vwrap">
-        <button id="vb" aria-haspopup="true" aria-expanded="false">Vansh ▾</button>
-        <div id="vpop"></div>
+      <!-- Desktop par yeh buttons search ke saath ek line me, mobile par neeche ki patti me -->
+      <div id="tools">
+        <button id="ex">Expand All</button>
+        <button id="co">Collapse All</button>
+        <div class="vwrap">
+          <button id="vb" aria-haspopup="true" aria-expanded="false">Vansh ▾</button>
+          <div id="vpop"></div>
+        </div>
       </div>
     </div>
   </header>
@@ -47,7 +50,12 @@
     <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
   </button>
 
-  <aside id="about" class="card"><div id="abody"></div></aside>
+  <div id="ihint" role="status" hidden>Is project ke baare me jaanein</div>
+
+  <aside id="about" class="card closed" aria-label="Is vanshavali ke baare me">
+    <button id="aclose" title="Band karein" aria-label="About band karein">✕</button>
+    <div id="abody"></div>
+  </aside>
 
   <aside id="panel" class="card closed" aria-label="Details">
     <div class="grab" aria-hidden="true"></div>
@@ -56,9 +64,11 @@
   </aside>
   <button id="popen" hidden>Details</button>
   <script type="module" src="js/main.js"></script>
+
+  <!-- Vercel Web Analytics: koi cookie nahi, koi personal data nahi -->
   <script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

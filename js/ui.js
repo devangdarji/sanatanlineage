@@ -297,7 +297,9 @@ export function createVanshMenu({ onSelect }) {
   // active = abhi chuna hua vansh code, ya null
   function sync(active) {
     btn.classList.toggle("on", !!active);
-    btn.innerHTML = active ? `<i style="background:${accent(active)}"></i>${esc(VANSH[active].name)} &#9662;` : "Vansh &#9662;";
+    btn.innerHTML = active
+      ? `<i style="background:${accent(active)}"></i><span class="vb-t">${esc(VANSH[active].name)}</span> &#9662;`
+      : "Vansh &#9662;";
     menu.querySelectorAll(".vp[data-br]").forEach((el) => el.classList.toggle("act", !!active && el.getAttribute("data-br") === active));
   }
 
@@ -318,8 +320,10 @@ export function createVanshMenu({ onSelect }) {
 }
 
 // ---------------------------------------------------------------- About card ("i" button)
+// Sirf pehli baar aane wale ko apne aap dikhta hai: desktop par card 4 second,
+// mobile par card ki jagah "i" ke paas chhota sandesh (taaki screen na dhake).
 
-export function createAbout({ stats, version, prev, repoUrl, changelog }) {
+export function createAbout({ stats, version, prev, repoUrl, changelog, isMobile, seenKey }) {
   const card = $("#about");
   const btn = $("#ib");
   let touched = false;
@@ -350,17 +354,45 @@ export function createAbout({ stats, version, prev, repoUrl, changelog }) {
     '<h4>Source aur seema</h4><span class="dim">Vishnu/Bhagavata/Agni/Garuda Purana, Mahabharata (Adi Parva 89-95), Valmiki Ramayana (Bala Kanda 71) aur Wikipedia ki suchiyon se milaan kiya; Eternal Raga, YugaTree, Ramayana Family Tree, Sutra aur Atha se sirf cross-check kiya. "... (kai pidhiyan)" wale boxes me Puranon ki naam-suchi alag-alag hai, isliye seedha pita-putra nahi dikhaya. Sab Puranic/Itihasik manyata hai; kaal-nirdharan pramanit nahi; Puranon me kai jagah matbhed hain.</span>' +
     '<h4>Kaise use karein</h4><span class="dim">Drag = pan &middot; Scroll ya do ungliyon se pinch = zoom &middot; Node par click = shaakha khule/band aur details khule &middot; Vansh button se poori shaakha highlight &middot; Upar daayin taraf ke button se light/dark theme.</span>';
 
+  const hint = $("#ihint");
+  const open = () => card.classList.remove("closed");
+  const close = () => card.classList.add("closed");
+
+  function hideHint() {
+    hint.hidden = true;
+    btn.classList.remove("pulse");
+  }
+
   btn.addEventListener("click", () => {
     touched = true;
+    hideHint();
     card.classList.toggle("closed");
   });
+  $("#aclose").addEventListener("click", close);
   card.addEventListener("mouseenter", () => (touched = true));
   card.addEventListener("touchstart", () => (touched = true), { passive: true });
 
-  // Pehli baar 3 second dikhe, phir apne aap band (agar user ne chhua nahi)
-  setTimeout(() => {
-    if (!touched) card.classList.add("closed");
-  }, 3000);
+  // Pehle aaye hain ya nahi, browser yaad rakhta hai
+  let firstVisit = false;
+  try {
+    firstVisit = localStorage.getItem(seenKey) !== "1";
+    localStorage.setItem(seenKey, "1");
+  } catch (e) {
+    /* private mode: kuch na dikhayein */
+  }
 
-  return { close: () => card.classList.add("closed") };
+  if (firstVisit) {
+    if (isMobile()) {
+      hint.hidden = false;
+      btn.classList.add("pulse");
+      setTimeout(hideHint, 4500);
+    } else {
+      open();
+      setTimeout(() => {
+        if (!touched) close();
+      }, 4000);
+    }
+  }
+
+  return { close };
 }

@@ -208,10 +208,11 @@ export function createTree(container, people, { onNodeClick, getHighlight, visib
   }
 
   // Shuruaati view: Brahma ji baayin taraf, dikhne wale hisse ke beech me
+  // Mobile par zoom itna ki Brahma ji aur unke bachchon ka column, dono poore dikhein
   function home() {
     const a = visibleArea();
-    const k = isMobile() ? 0.55 : 0.7;
-    svg.call(zoom.transform, d3.zoomIdentity.translate(isMobile() ? 16 : 60, (a.top + a.bottom) / 2).scale(k));
+    const k = isMobile() ? Math.min(0.75, Math.max(0.45, (innerWidth - 24) / (2 * rw + gapX))) : 0.7;
+    svg.call(zoom.transform, d3.zoomIdentity.translate(isMobile() ? 12 : 60, (a.top + a.bottom) / 2).scale(k));
   }
 
   // Node ko dikhne wale hisse ke beech me laana, phir blink
