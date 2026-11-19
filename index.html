@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B100E">
+  <meta name="description" content="Sanatan Vanshavali: Brahma ji se Mahabharata tak ki Puranic vansh-parampara, sourced aur open-source.">
+  <title>सनातन वंशावली – Sanatan Vanshavali</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <!-- Pehli paint se pehle saved theme lagao, taaki dark se light ka flash na dikhe -->
+  <script>
+    try {
+      var t = localStorage.getItem("vanshavali-theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="tree"></div>
+
+  <header id="hdr">
+    <h1><span>सनातन वंशावली</span></h1>
+    <div id="ctl">
+      <div class="sbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Search Name or Vansh" aria-label="Naam ya vansh khojein">
+        <button id="qx" title="Saaf karein" aria-label="Search saaf karein">✕</button>
+        <div id="sres" role="listbox"></div>
+      </div>
+      <!-- Desktop par yeh buttons search ke saath ek line me, mobile par neeche ki patti me -->
+      <div id="tools">
+        <button id="ex">Expand All</button>
+        <button id="co">Collapse All</button>
+        <div class="vwrap">
+          <button id="vb" aria-haspopup="true" aria-expanded="false">Vansh ▾</button>
+          <div id="vpop"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <button id="ib" class="corner" title="Is vanshavali ke baare me" aria-label="Is vanshavali ke baare me">i</button>
+  <button id="tb" class="corner" title="Light mode chalu karein" aria-label="Light mode chalu karein">
+    <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+    <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+  </button>
+
+  <div id="ihint" role="status" hidden>Is project ke baare me jaanein</div>
+
+  <aside id="about" class="card closed" aria-label="Is vanshavali ke baare me">
+    <button id="aclose" title="Band karein" aria-label="About band karein">✕</button>
+    <div id="abody"></div>
+  </aside>
+
+  <aside id="panel" class="card closed" aria-label="Details">
+    <div class="grab" aria-hidden="true"></div>
+    <button id="pclose" title="Band karein" aria-label="Details band karein">✕</button>
+    <div id="pbody"></div>
+  </aside>
+  <button id="popen" hidden>Details</button>
+  <script type="module" src="js/main.js"></script>
+
+  <!-- Vercel Web Analytics: koi cookie nahi, koi personal data nahi -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
