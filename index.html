@@ -1,74 +1,112 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0B100E">
-  <meta name="description" content="Sanatan Vanshavali: Brahma ji se Mahabharata tak ki Puranic vansh-parampara, sourced aur open-source.">
-  <title>सनातन वंशावली – Sanatan Vanshavali</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-  <!-- Pehli paint se pehle saved theme lagao, taaki dark se light ka flash na dikhe -->
-  <script>
-    try {
-      var t = localStorage.getItem("vanshavali-theme");
-      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-    } catch (e) {}
-  </script>
-</head>
-<body>
-  <div id="tree"></div>
+// Data ke niyam: card ki doosri line, patni/pati, kaal, source, aur data ki jaanch.
+// Isme koi DOM ya D3 nahi hai, isliye yahi file browser aur GitHub ki jaanch (Node) dono me chalti hai.
 
-  <header id="hdr">
-    <h1><span>सनातन वंशावली</span></h1>
-    <div id="ctl">
-      <div class="sbox">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Search Name or Vansh" aria-label="Naam ya vansh khojein">
-        <button id="qx" title="Saaf karein" aria-label="Search saaf karein">✕</button>
-        <div id="sres" role="listbox"></div>
-      </div>
-      <!-- Desktop par yeh buttons search ke saath ek line me, mobile par neeche ki patti me -->
-      <div id="tools">
-        <button id="ex">Expand All</button>
-        <button id="co">Collapse All</button>
-        <div class="vwrap">
-          <button id="vb" aria-haspopup="true" aria-expanded="false">Vansh ▾</button>
-          <div id="vpop"></div>
-        </div>
-      </div>
-    </div>
-  </header>
+import { VANSH } from "../data/vansh.js";
 
-  <button id="ib" class="corner" title="Is vanshavali ke baare me" aria-label="Is vanshavali ke baare me">i</button>
-  <button id="tb" class="corner" title="Light mode chalu karein" aria-label="Light mode chalu karein">
-    <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
-    <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
-  </button>
+export const YUGA = {
+  treta: "Treta Yuga",
+  dvapara: "Dvapara Yuga (ant)",
+  sandhi: "Dvapara-Kali sandhi",
+};
 
-  <div id="ihint" role="status" hidden>Is project ke baare me jaanein</div>
+export const TYPE = {
+  person: "Vyakti",
+  gap: "Beech ki pidhiyon ka box",
+  group: "Samuh (group) box",
+};
 
-  <aside id="about" class="card closed" aria-label="Is vanshavali ke baare me">
-    <button id="aclose" title="Band karein" aria-label="About band karein">✕</button>
-    <div id="abody"></div>
-  </aside>
+// Vyakti ke block me sirf yahi fields chalte hain (spelling ki galti pakadne ke liye)
+const FIELDS = [
+  "id", "parent", "vansh", "type", "yuga", "name", "subtitle", "wives", "husbands", "mother",
+  "parents", "note", "knownFor", "deeds", "abilities", "sources", "variations",
+];
+// In fields me [[id]] likhne se link banta hai
+export const TEXT_FIELDS = ["subtitle", "mother", "parents", "note", "knownFor", "deeds", "abilities", "variations"];
 
-  <aside id="panel" class="card closed" aria-label="Details">
-    <div class="grab" aria-hidden="true"></div>
-    <button id="pclose" title="Band karein" aria-label="Details band karein">✕</button>
-    <div id="pbody"></div>
-  </aside>
-  <button id="popen" hidden>Details</button>
-  <script type="module" src="js/main.js"></script>
+export const vanshOf = (code) => VANSH[code] || VANSH.R;
+export const isGap = (p) => p.type === "gap";
+export const kindOf = (p) => TYPE[p.type || "person"];
+export const yugaOf = (p) => YUGA[p.yuga] || null;
 
-  <!-- Vercel Web Analytics: koi cookie nahi, koi personal data nahi -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
-</body>
-</html>
+// { label: "Patni" | "Pati", list: [...] } ya null
+export function spouses(p) {
+  if (p.wives && p.wives.length) return { label: "Patni", list: p.wives };
+  if (p.husbands && p.husbands.length) return { label: "Pati", list: p.husbands };
+  return null;
+}
+
+// Node ke card ki doosri line: subtitle; "Wife: ..." (Mata: ...)
+export function cardLine(p) {
+  const parts = [];
+  if (p.subtitle) parts.push(p.subtitle);
+  const sp = spouses(p);
+  if (sp) {
+    const one = sp.list.length === 1;
+    const label = p.wives ? (one ? "Wife" : "Wives") : one ? "Husband" : "Husbands";
+    parts.push(`${label}: ${sp.list.join(", ")}`);
+  }
+  const line = parts.join("; ");
+  if (!p.mother) return line;
+  return line ? `${line} (Mata: ${p.mother})` : `Mata: ${p.mother}`;
+}
+
+// Apna source na ho to vansh ka default source dikhta hai (auto = true)
+export function sourcesOf(p) {
+  if (p.sources && p.sources.length) return { list: p.sources, auto: false };
+  return { list: vanshOf(p.vansh).sources || ["Puranic parampara"], auto: true };
+}
+
+// About panel ke aankde
+export function analyze(people) {
+  const names = people.map((p) => p.name.toLowerCase()).join(" ");
+  const gaps = people.filter((p) => p.type === "gap").length;
+  const groups = people.filter((p) => p.type === "group").length;
+  const outside = new Set(); // aise patni/pati jinka apna node nahi hai
+  people.forEach((p) =>
+    (spouses(p)?.list || []).forEach((n) => {
+      const first = n.split(/[ /(]/)[0].toLowerCase();
+      if (first && !names.includes(first)) outside.add(first);
+    })
+  );
+  return { nodes: people.length, gaps, groups, persons: people.length - gaps - groups, spouses: outside.size };
+}
+
+// Galtiyon ki list lautata hai (khaali list = sab theek). Har galti ke aage vyakti ka id.
+export function validate(people) {
+  const errors = [];
+  const ids = new Set();
+  const roots = [];
+  const err = (p, msg) => errors.push(`${p.id || "?"}: ${msg}`);
+
+  people.forEach((p) => {
+    if (!p.id) err(p, "id khaali hai");
+    else if (!/^[a-z0-9_]+$/.test(p.id)) err(p, "id me sirf a-z, 0-9 aur _ chalenge");
+    if (ids.has(p.id)) err(p, "yeh id do baar aaya hai");
+    ids.add(p.id);
+    if (!p.parent) roots.push(p.id);
+    if (!p.name || !String(p.name).trim()) err(p, "name khaali hai");
+    if (!VANSH[p.vansh]) err(p, `vansh "${p.vansh}" data/vansh.js me nahi hai`);
+    if (p.type && !TYPE[p.type]) err(p, `type "${p.type}" galat hai (gap ya group)`);
+    if (p.yuga && !YUGA[p.yuga]) err(p, `yuga "${p.yuga}" galat hai (${Object.keys(YUGA).join(", ")})`);
+    if (p.wives && p.husbands) err(p, "wives aur husbands dono ek saath nahi");
+    ["wives", "husbands", "sources"].forEach((f) => {
+      if (p[f] !== undefined && !(Array.isArray(p[f]) && p[f].every((x) => typeof x === "string")))
+        err(p, `${f} ek list honi chahiye, jaise ["A", "B"]`);
+    });
+    Object.keys(p).forEach((k) => {
+      if (!FIELDS.includes(k)) err(p, `"${k}" field pehchana nahi gaya (spelling check karein)`);
+    });
+  });
+
+  people.forEach((p) => {
+    if (p.parent && !ids.has(p.parent)) err(p, `parent "${p.parent}" nahi mila`);
+    TEXT_FIELDS.forEach((f) => {
+      for (const m of String(p[f] || "").matchAll(/\[\[([^\]]+)\]\]/g)) {
+        if (!ids.has(m[1])) err(p, `${f} me [[${m[1]}]] naam ka koi id nahi hai`);
+      }
+    });
+  });
+  if (roots.length !== 1) errors.push(`Sirf ek vyakti bina parent ke hona chahiye, mile: ${roots.join(", ") || "koi nahi"}`);
+
+  return errors;
+}
